@@ -11,7 +11,10 @@ private:
     {
         Node *prev;
         Node *next;
-        T    *data;
+        T     data;
+
+        Node(Node *prev, Node *next, const T& data);
+        Node();
     };
 
     class ConstIterator

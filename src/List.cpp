@@ -68,7 +68,7 @@ T& List<T>::Iterator::operator*() const
 template <typename T>
 typename List<T>::Iterator& List<T>::Iterator::operator++()
 {
-    m_current = m_current->next;
+    ConstIterator::m_current = ConstIterator::m_current->next;
     return *this;
 }
 
