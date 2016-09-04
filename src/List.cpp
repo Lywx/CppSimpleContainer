@@ -92,26 +92,168 @@ List<T>::Iterator::Iterator(Node *current) : ConstIterator(current)
 /* List Implementation                                                  */
 /************************************************************************/
 template <typename T>
-List<T>::List() :
-    m_head(Node()),
-    m_tail(Node()),
-    m_size(0)
+List<T>::List()
 {
+    init();
+}
+
+template <typename T>
+List<T>::List(const List& rhs)
+{
+    init();
+    for (auto& x : rhs)
+    {
+        push_back(x);
+    }
+}
+
+template <typename T>
+List<T>& List<T>::operator=(const List& rhs)
+{
+    // TODO
+}
+
+template <typename T>
+List<T>::List(List&& rhs) noexcept
+{
+    // TODO
+}
+
+template <typename T>
+List<T>& List<T>::operator=(List&& rhs) noexcept
+{
+    // TODO
 }
 
 template <typename T>
 List<T>::~List()
 {
+    clear();
+
+    delete m_head;
+    delete m_tail;
 }
 
 template <typename T>
-typename List<T>::Iterator List<T>::begin() const
+typename List<T>::Iterator List<T>::begin()
 {
     return m_head;
 }
 
 template <typename T>
-typename List<T>::Iterator List<T>::end() const
+typename List<T>::Iterator List<T>::end()
 {
     return m_tail;
+}
+
+template <typename T>
+int List<T>::size() const
+{
+    return m_size;
+}
+
+template <typename T>
+bool List<T>::empty() const
+{
+    return size() == 0;
+}
+
+template <typename T>
+void List<T>::clear()
+{
+    // TODO
+}
+
+template <typename T>
+T& List<T>::front()
+{
+    return *begin();
+}
+
+template <typename T>
+const T& List<T>::front() const
+{
+    return *begin();
+}
+
+template <typename T>
+T& List<T>::back()
+{
+    return *--end();
+}
+
+template <typename T>
+const T& List<T>::back() const
+{
+    return *--end();
+}
+
+template <typename T>
+void List<T>::push_front(const T& x)
+{
+    // TODO
+}
+
+template <typename T>
+void List<T>::push_front(T&& x)
+{
+    // TODO
+}
+
+template <typename T>
+void List<T>::push_back(const T& x)
+{
+    // TODO
+}
+
+template <typename T>
+void List<T>::push_back(T&& x)
+{
+    // TODO
+}
+
+template <typename T>
+T& List<T>::pop_front()
+{
+    // TODO
+}
+
+template <typename T>
+T& List<T>::pop_back()
+{
+    // TODO
+}
+
+template <typename T>
+typename List<T>::Iterator List<T>::insert(Iterator iterator, const T& x)
+{
+    // TODO
+}
+
+template <typename T>
+typename List<T>::Iterator List<T>::insert(Iterator iterator, T&& x)
+{
+    // TODO
+}
+
+template <typename T>
+void List<T>::erase(Iterator iterator)
+{
+    // TODO
+}
+
+template <typename T>
+void List<T>::erase(Iterator from, Iterator to)
+{
+    // TODO
+}
+
+template <typename T>
+void List<T>::init()
+{
+    m_size = 0;
+    m_head = new Node;
+    m_head->next = m_tail;
+    m_tail = new Node;
+    m_tail->prev = m_head;
 }

@@ -13,6 +13,7 @@ private:
         Node *next;
         T     data;
 
+        // TODO
         Node(Node *prev, Node *next, const T& data);
         Node();
     };
@@ -59,21 +60,22 @@ public:
     /************************************************************************/
     List();
 
+    // Copy Semantics
     List(const List& rhs);
     List& operator=(const List& rhs);
 
-    List(List&& rhs);
-    List& operator=(List&& rhs);
+    // Move Semantics
+    List(List&& rhs) noexcept;
+    List& operator=(List&& rhs) noexcept;
 
     ~List();
 
     Iterator begin();
     Iterator end();
-
     ConstIterator cbegin() const;
     ConstIterator cend() const;
 
-    int size() const;
+    int  size() const;
     bool empty() const;
 
     void clear();
