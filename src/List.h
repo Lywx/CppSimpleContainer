@@ -1,5 +1,8 @@
 #pragma once
 
+#include <utility>
+
+// List is an ADT for double linked list.
 template<typename T>
 class List
 {
@@ -13,9 +16,8 @@ private:
         Node *next;
         T     data;
 
-        // TODO
-        Node(Node *prev, Node *next, const T& data);
-        Node();
+        Node(Node *prev = nullptr, Node *next = nullptr, const T& data = {});
+        Node(Node *prev = nullptr, Node *next = nullptr, const T && data = {});
     };
 
     class ConstIterator
@@ -62,7 +64,7 @@ public:
 
     // Copy Semantics
     List(const List& rhs);
-    List& operator=(const List& rhs);
+    List& operator=(const List rhs);
 
     // Move Semantics
     List(List&& rhs) noexcept;
@@ -70,9 +72,16 @@ public:
 
     ~List();
 
+    // First iterator after head
     Iterator begin();
+
+    // Iterator for tail
     Iterator end();
+
+    // First iterator after head
     ConstIterator cbegin() const;
+
+    // Iterator for tail
     ConstIterator cend() const;
 
     int  size() const;
@@ -80,26 +89,29 @@ public:
 
     void clear();
 
+    // First item after head
     T& front();
     const T& front() const;
 
+    // Last item before tail
     T& back();
     const T& back() const;
 
-    void push_front(const T& x);
-    void push_front(T&& x);
+    void push_front(const T& item);
+    void push_front(T&& item);
 
-    void push_back(const T& x);
-    void push_back(T&& x);
+    void push_back(const T& item);
+    void push_back(T&& item);
 
     T& pop_front();
     T& pop_back();
 
-    Iterator insert(Iterator iterator, const T& x);
-    Iterator insert(Iterator iterator, T&& x);
+    // Insert item before iterator
+    Iterator insert(Iterator iterator, const T& item);
+    Iterator insert(Iterator iterator, T&& item);
 
-    void erase(Iterator iterator);
-    void erase(Iterator from, Iterator to);
+    Iterator erase(Iterator iterator);
+    Iterator erase(Iterator from, Iterator to);
 
 private:
     void init();
@@ -107,4 +119,15 @@ private:
     Node *m_head;
     Node *m_tail;
     int   m_size;
+
+    friend void swap(List& lhs, List& rhs)
+    {
+        using std::swap;
+
+        // Swap the pointers so they are swapping the pointed nodes
+        swap(lhs.m_head, rhs.m_head);
+        swap(lhs.m_tail, rhs.m_tail);
+
+        swap(lhs.m_size, rhs.m_size);
+    }
 };

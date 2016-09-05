@@ -17,7 +17,7 @@ TEST_CASE("List Test", "")
         list.push_front(1);
 
         auto i = 0;
-        for (auto iter = list.cbegin(); iter != list.cend(); ++iter)
+        for (List<int>::Iterator iter = list.cbegin(); iter != list.cend(); ++iter)
         {
             REQUIRE(*iter == listExpected[i]);
             ++i;

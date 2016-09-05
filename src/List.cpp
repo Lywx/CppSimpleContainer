@@ -1,6 +1,25 @@
 #include "List.h"
 
 /************************************************************************/
+/* Node Implementation                                                  */
+/************************************************************************/
+template <typename T>
+List<T>::Node::Node(Node *prev, Node *next, const T& data) :
+    prev(prev),
+    next(next),
+    data(data)
+{
+}
+
+template <typename T>
+List<T>::Node::Node(Node *prev, Node *next, const T&& data) :
+    prev(prev),
+    next(next),
+    data(std::move(data))
+{
+}
+
+/************************************************************************/
 /* ConstIterator Implementation                                         */
 /************************************************************************/
 template <typename T>
@@ -101,16 +120,21 @@ template <typename T>
 List<T>::List(const List& rhs)
 {
     init();
-    for (auto& x : rhs)
+
+    for (auto& item : rhs)
     {
-        push_back(x);
+        push_back(item);
     }
 }
 
 template <typename T>
-List<T>& List<T>::operator=(const List& rhs)
+List<T>& List<T>::operator=(const List rhs)
 {
-    // TODO
+    // I believe there is an error in Data Structures and Algorithm Analysis in
+    // C++.
+    using std::swap;
+    swap(*this, rhs);
+    return *this;
 }
 
 template <typename T>
@@ -137,11 +161,23 @@ List<T>::~List()
 template <typename T>
 typename List<T>::Iterator List<T>::begin()
 {
-    return m_head;
+    return m_head->next;
 }
 
 template <typename T>
 typename List<T>::Iterator List<T>::end()
+{
+    return m_tail;
+}
+
+template <typename T>
+typename List<T>::ConstIterator List<T>::cbegin() const
+{
+    return m_head->next;
+}
+
+template <typename T>
+typename List<T>::ConstIterator List<T>::cend() const
 {
     return m_tail;
 }
@@ -161,7 +197,10 @@ bool List<T>::empty() const
 template <typename T>
 void List<T>::clear()
 {
-    // TODO
+    while(!empty())
+    {
+        pop_front();
+    }
 }
 
 template <typename T>
@@ -189,63 +228,93 @@ const T& List<T>::back() const
 }
 
 template <typename T>
-void List<T>::push_front(const T& x)
+void List<T>::push_front(const T& item)
 {
-    // TODO
+    insert(begin(), item);
 }
 
 template <typename T>
-void List<T>::push_front(T&& x)
+void List<T>::push_front(T&& item)
 {
-    // TODO
+    insert(begin(), std::move(item));
 }
 
 template <typename T>
-void List<T>::push_back(const T& x)
+void List<T>::push_back(const T& item)
 {
-    // TODO
+    insert(back(), item);
 }
 
 template <typename T>
-void List<T>::push_back(T&& x)
+void List<T>::push_back(T&& item)
 {
-    // TODO
+    insert(back(), std::move(item));
 }
 
 template <typename T>
 T& List<T>::pop_front()
 {
-    // TODO
+    auto itemReturn = front();
+    erase(begin());
+    return itemReturn;
 }
 
 template <typename T>
 T& List<T>::pop_back()
 {
-    // TODO
+    auto itemReturn = back();
+    erase(--end());
+    return itemReturn;
 }
 
 template <typename T>
-typename List<T>::Iterator List<T>::insert(Iterator iterator, const T& x)
+typename List<T>::Iterator List<T>::insert(Iterator iterator, const T& item)
 {
-    // TODO
+    Node *nodeCurrent = iterator.current;
+    Node *nodeNew = new Node(nodeCurrent->prev, nodeCurrent, item);
+    nodeCurrent->prev = nodeCurrent->prev->next = nodeNew;
+
+    ++m_size;
+
+    return nodeNew;
 }
 
 template <typename T>
-typename List<T>::Iterator List<T>::insert(Iterator iterator, T&& x)
+typename List<T>::Iterator List<T>::insert(Iterator iterator, T&& item)
 {
-    // TODO
+    Node *nodeCurrent = iterator.m_current;
+    Node *nodeNew = new Node(nodeCurrent->prev, nodeCurrent, std::move(item));
+    nodeCurrent->prev = nodeCurrent->prev->next = nodeNew;
+
+    ++m_size;
+
+    return nodeNew;
 }
 
 template <typename T>
-void List<T>::erase(Iterator iterator)
+typename List<T>::Iterator List<T>::erase(Iterator iterator)
 {
-    // TODO
+    Node *nodeCurrent = iterator.m_current;
+    Iterator iteratorReturn{ nodeCurrent->next };
+
+    nodeCurrent->prev->next = nodeCurrent->next;
+    nodeCurrent->next->prev = nodeCurrent->prev;
+
+    delete nodeCurrent;
+    --m_size;
+
+    return iteratorReturn;
 }
 
 template <typename T>
-void List<T>::erase(Iterator from, Iterator to)
+typename List<T>::Iterator List<T>::erase(Iterator from, Iterator to)
 {
-    // TODO
+    for (auto iterator = from; iterator != to();)
+    {
+        iterator = erase(iterator);
+    }
+
+    return to;
 }
 
 template <typename T>
