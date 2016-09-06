@@ -1,21 +1,35 @@
 #pragma once
 
+#include <stdexcept>
+
 template <typename T>
 class Vector
 {
 public:
+    /************************************************************************/
+    /* Constructors and Destructor                                          */
+    /************************************************************************/
     explicit Vector(int size);
 
-    // Copy Operations
+    // Copy Semantics
     Vector(const Vector& rhs);
     Vector& operator=(const Vector& rhs);
 
+    // Move Semantics
+    Vector(Vector&& rhs) noexcept;
+    Vector& operator=(Vector&& rhs) noexcept;
+
     ~Vector();
+
+    /************************************************************************/
+    /* Public Members                                                       */
+    /************************************************************************/
+    int  capacity() const;
+    int  size() const;
+    bool empty() const;
 
     T& operator[](int idx);
     T& at(int idx);
-    int capacity() const;
-    void reserve(int capacity);
 
     void push_back(T x);
     void pop_back();
@@ -24,14 +38,10 @@ public:
 
     void assign();
     void clear();
-
-    int  size() const;
-    bool empty() const;
+    void reserve(int capacity);
 
 private:
     int m_capacity;
     int m_size;
     T  *m_items;
 };
-
-

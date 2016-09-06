@@ -1,5 +1,8 @@
 #include "Vector.h"
 
+/************************************************************************/
+/* Constructors and Destructor                                          */
+/************************************************************************/
 template <typename T>
 Vector<T>::Vector(int size) :
     m_capacity(size),
@@ -24,10 +27,31 @@ Vector<T>::Vector(const Vector& rhs) :
 template <typename T>
 Vector<T>& Vector<T>::operator=(const Vector& rhs)
 {
-    auto copy(rhs);
-
-    // TODO
+    Vector<T> copy = rhs;
     swap(*this, copy);
+    return *this;
+}
+
+template <typename T>
+Vector<T>::Vector(Vector&& rhs) noexcept :
+    m_capacity(rhs.m_capacity),
+    m_size(rhs.m_size),
+    m_items(m_items)
+{
+    rhs.m_size = 0;
+    rhs.m_capacity = 0;
+    rhs.m_items = nullptr;
+}
+
+template <typename T>
+Vector<T>& Vector<T>::operator=(Vector&& rhs) noexcept
+{
+    using std::swap;
+
+    swap(m_size, rhs.m_size);
+    swap(m_capacity, rhs.m_capacity);
+    swap(m_items, rhs.m_items);
+
     return *this;
 }
 
@@ -37,28 +61,13 @@ Vector<T>::~Vector()
     delete[] m_items;
 }
 
-template <typename T>
-T& Vector<T>::operator[](int idx)
-{
-    // TODO
-}
-
-template <typename T>
-T& Vector<T>::at(int idx)
-{
-    // TODO
-}
-
+/************************************************************************/
+/* Public Members                                                       */
+/************************************************************************/
 template <typename T>
 int Vector<T>::capacity() const
 {
     return m_capacity;
-}
-
-template <typename T>
-void Vector<T>::reserve(int capacity)
-{
-    // TODO
 }
 
 template <typename T>
@@ -72,3 +81,60 @@ bool Vector<T>::empty() const
 {
     return size() == 0;
 }
+
+template <typename T>
+T& Vector<T>::operator[](int idx)
+{
+    return at(idx);
+}
+
+template <typename T>
+T& Vector<T>::at(int idx)
+{
+    if (idx < size())
+    {
+        return m_items[idx];
+    }
+    else
+    {
+        throw std::out_of_range("Index is out of range.");
+    }
+}
+
+template <typename T>
+void Vector<T>::push_back(T x)
+{
+
+}
+
+template <typename T>
+void Vector<T>::pop_back()
+{
+}
+
+template <typename T>
+const T& Vector<T>::back() const
+{
+}
+
+template <typename T>
+const T& Vector<T>::front() const
+{
+}
+
+template <typename T>
+void Vector<T>::assign()
+{
+}
+
+template <typename T>
+void Vector<T>::clear()
+{
+}
+
+template <typename T>
+void Vector<T>::reserve(int capacity)
+{
+    // TODO
+}
+

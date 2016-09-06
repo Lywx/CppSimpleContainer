@@ -62,10 +62,10 @@ private:
     {
         Node *prev;
         Node *next;
-        T     data;
+        T     item;
 
-        Node(const T& data = {}, Node *prev = nullptr, Node *next = nullptr);
-        Node(const T && data, Node *prev = nullptr, Node *next = nullptr);
+        Node(const T& item = {}, Node *prev = nullptr, Node *next = nullptr);
+        Node(const T && item, Node *prev = nullptr, Node *next = nullptr);
     };
 
 public:

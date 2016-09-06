@@ -4,18 +4,18 @@
 /* Node Implementation                                                  */
 /************************************************************************/
 template <typename T>
-List<T>::Node::Node(const T& data, Node *prev, Node *next) :
+List<T>::Node::Node(const T& item, Node *prev, Node *next) :
     prev(prev),
     next(next),
-    data(data)
+    item(item)
 {
 }
 
 template <typename T>
-List<T>::Node::Node(const T&& data, Node *prev, Node *next) :
+List<T>::Node::Node(const T&& item, Node *prev, Node *next) :
     prev(prev),
     next(next),
-    data(std::move(data))
+    item(std::move(item))
 {
 }
 
@@ -101,7 +101,7 @@ bool List<T>::ConstIterator::operator!=(ConstIterator&& rhs) const
 template <typename T>
 T& List<T>::ConstIterator::retrieve() const
 {
-    return m_current->data;
+    return m_current->item;
 }
 
 template <typename T>
