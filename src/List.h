@@ -6,35 +6,33 @@
 template<typename T>
 class List
 {
-private:
     /************************************************************************/
     /* Inner Class Definition                                               */
     /************************************************************************/
-    struct Node
-    {
-        Node *prev;
-        Node *next;
-        T     data;
-
-        Node(Node *prev = nullptr, Node *next = nullptr, const T& data = {});
-        Node(Node *prev = nullptr, Node *next = nullptr, const T && data = {});
-    };
-
+private:
+    struct Node;
+public:
     class ConstIterator
     {
     protected:
         ConstIterator();
-        explicit ConstIterator(Node *current);
+
+        // Allow implicit conversion
+        ConstIterator(Node *current);
     public:
         ~ConstIterator();
 
         const T& operator*() const;
 
-        ConstIterator& operator++() const;
-        ConstIterator& operator++(int) const;
+        ConstIterator& operator++();
+        ConstIterator& operator++(int);
+        ConstIterator& operator--();
+        ConstIterator& operator--(int);
 
         bool operator==(ConstIterator& rhs) const;
+        bool operator==(ConstIterator&& rhs) const;
         bool operator!=(ConstIterator& rhs) const;
+        bool operator!=(ConstIterator&& rhs) const;
 
     protected:
         T& retrieve() const;
@@ -47,13 +45,27 @@ private:
     class Iterator : public ConstIterator
     {
     public:
-        explicit Iterator(Node *current);
+        // Allow implicit conversion
+        Iterator(Node *current);
 
         T& operator*() const;
         Iterator& operator++();
         Iterator& operator++(int);
+        Iterator& operator--();
+        Iterator& operator--(int);
 
         friend class List;
+    };
+
+private:
+    struct Node
+    {
+        Node *prev;
+        Node *next;
+        T     data;
+
+        Node(const T& data = {}, Node *prev = nullptr, Node *next = nullptr);
+        Node(const T && data, Node *prev = nullptr, Node *next = nullptr);
     };
 
 public:
@@ -64,7 +76,7 @@ public:
 
     // Copy Semantics
     List(const List& rhs);
-    List& operator=(const List rhs);
+    List& operator=(const List& rhs);
 
     // Move Semantics
     List(List&& rhs) noexcept;
@@ -103,8 +115,8 @@ public:
     void push_back(const T& item);
     void push_back(T&& item);
 
-    T& pop_front();
-    T& pop_back();
+    T pop_front();
+    T pop_back();
 
     // Insert item before iterator
     Iterator insert(Iterator iterator, const T& item);

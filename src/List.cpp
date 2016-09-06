@@ -4,7 +4,7 @@
 /* Node Implementation                                                  */
 /************************************************************************/
 template <typename T>
-List<T>::Node::Node(Node *prev, Node *next, const T& data) :
+List<T>::Node::Node(const T& data, Node *prev, Node *next) :
     prev(prev),
     next(next),
     data(data)
@@ -12,7 +12,7 @@ List<T>::Node::Node(Node *prev, Node *next, const T& data) :
 }
 
 template <typename T>
-List<T>::Node::Node(Node *prev, Node *next, const T&& data) :
+List<T>::Node::Node(const T&& data, Node *prev, Node *next) :
     prev(prev),
     next(next),
     data(std::move(data))
@@ -45,18 +45,32 @@ const T& List<T>::ConstIterator::operator*() const
 }
 
 template <typename T>
-typename List<T>::ConstIterator& List<T>::ConstIterator::operator++() const
+typename List<T>::ConstIterator& List<T>::ConstIterator::operator++()
 {
     m_current = m_current->next;
     return *this;
 }
 
 template <typename T>
-typename List<T>::ConstIterator& List<T>::ConstIterator::operator++(int) const
+typename List<T>::ConstIterator& List<T>::ConstIterator::operator++(int)
 {
     // Call copy constructor
     auto old = *this;
     ++(*this);
+    return old;
+}
+
+template <typename T>
+typename List<T>::ConstIterator& List<T>::ConstIterator::operator--()
+{
+    m_current = m_current->prev;
+}
+
+template <typename T>
+typename List<T>::ConstIterator& List<T>::ConstIterator::operator--(int)
+{
+    auto old = *this;
+    --(*this);
     return old;
 }
 
@@ -67,7 +81,19 @@ bool List<T>::ConstIterator::operator==(ConstIterator& rhs) const
 }
 
 template <typename T>
+bool List<T>::ConstIterator::operator==(ConstIterator&& rhs) const
+{
+    return m_current == rhs.m_current;
+}
+
+template <typename T>
 bool List<T>::ConstIterator::operator!=(ConstIterator& rhs) const
+{
+    return !(*this == rhs);
+}
+
+template <typename T>
+bool List<T>::ConstIterator::operator!=(ConstIterator&& rhs) const
 {
     return !(*this == rhs);
 }
@@ -96,6 +122,21 @@ typename List<T>::Iterator& List<T>::Iterator::operator++(int)
 {
     auto old = *this;
     ++(*this);
+    return old;
+}
+
+template <typename T>
+typename List<T>::Iterator& List<T>::Iterator::operator--()
+{
+    ConstIterator::m_current = ConstIterator::m_current->prev;
+    return *this;
+}
+
+template <typename T>
+typename List<T>::Iterator& List<T>::Iterator::operator--(int)
+{
+    auto old = *this;
+    --(*this);
     return old;
 }
 
@@ -128,25 +169,38 @@ List<T>::List(const List& rhs)
 }
 
 template <typename T>
-List<T>& List<T>::operator=(const List rhs)
+List<T>& List<T>::operator=(const List& rhs)
 {
-    // I believe there is an error in Data Structures and Algorithm Analysis in
-    // C++.
+    // Initialization call copy constructor here
+    List copy = rhs;
+
     using std::swap;
-    swap(*this, rhs);
+    swap(*this, copy);
     return *this;
 }
 
 template <typename T>
-List<T>::List(List&& rhs) noexcept
+List<T>::List(List&& rhs) noexcept :
+    m_head(rhs.m_head),
+    m_tail(rhs.m_tail),
+    m_size(rhs.m_size)
 {
-    // TODO
+    rhs.m_size = 0;
+    rhs.m_head = nullptr;
+    rhs.m_tail = nullptr;
 }
 
 template <typename T>
 List<T>& List<T>::operator=(List&& rhs) noexcept
 {
-    // TODO
+    // Call move constructor here
+
+    using std::swap;
+    swap(m_head, rhs.m_head);
+    swap(m_tail, rhs.m_tail);
+    swap(m_size, rhs.m_size);
+
+    return *this;
 }
 
 template <typename T>
@@ -242,27 +296,27 @@ void List<T>::push_front(T&& item)
 template <typename T>
 void List<T>::push_back(const T& item)
 {
-    insert(back(), item);
+    insert(end(), item);
 }
 
 template <typename T>
 void List<T>::push_back(T&& item)
 {
-    insert(back(), std::move(item));
+    insert(end(), std::move(item));
 }
 
 template <typename T>
-T& List<T>::pop_front()
+T List<T>::pop_front()
 {
-    auto itemReturn = front();
+    T itemReturn = front();
     erase(begin());
     return itemReturn;
 }
 
 template <typename T>
-T& List<T>::pop_back()
+T List<T>::pop_back()
 {
-    auto itemReturn = back();
+    T itemReturn = back();
     erase(--end());
     return itemReturn;
 }
@@ -283,7 +337,7 @@ template <typename T>
 typename List<T>::Iterator List<T>::insert(Iterator iterator, T&& item)
 {
     Node *nodeCurrent = iterator.m_current;
-    Node *nodeNew = new Node(nodeCurrent->prev, nodeCurrent, std::move(item));
+    Node *nodeNew = new Node(std::move(item), nodeCurrent->prev, nodeCurrent);
     nodeCurrent->prev = nodeCurrent->prev->next = nodeNew;
 
     ++m_size;
@@ -322,7 +376,8 @@ void List<T>::init()
 {
     m_size = 0;
     m_head = new Node;
-    m_head->next = m_tail;
     m_tail = new Node;
+
     m_tail->prev = m_head;
+    m_head->next = m_tail;
 }
