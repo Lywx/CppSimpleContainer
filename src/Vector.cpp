@@ -36,7 +36,7 @@ template <typename T>
 Vector<T>::Vector(Vector&& rhs) noexcept :
     m_capacity(rhs.m_capacity),
     m_size(rhs.m_size),
-    m_items(m_items)
+    m_items(rhs.m_items)
 {
     rhs.m_size = 0;
     rhs.m_capacity = 0;
@@ -104,32 +104,37 @@ T& Vector<T>::at(int idx)
 template <typename T>
 void Vector<T>::push_back(T x)
 {
-
+// TODO
 }
 
 template <typename T>
 void Vector<T>::pop_back()
 {
+// TODO
 }
 
 template <typename T>
 const T& Vector<T>::back() const
 {
+// TODO
 }
 
 template <typename T>
 const T& Vector<T>::front() const
 {
+// TODO
 }
 
 template <typename T>
 void Vector<T>::assign()
 {
+// TODO
 }
 
 template <typename T>
 void Vector<T>::clear()
 {
+// TODO
 }
 
 template <typename T>
