@@ -1,5 +1,4 @@
 #pragma once
-#include<vector>
 
 template <typename T>
 class Vector
@@ -18,7 +17,6 @@ public:
     int capacity() const;
     void reserve(int capacity);
 
-    // TODO
     void push_back(T x);
     void pop_back();
     const T& back() const;

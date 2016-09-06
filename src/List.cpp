@@ -324,8 +324,9 @@ T List<T>::pop_back()
 template <typename T>
 typename List<T>::Iterator List<T>::insert(Iterator iterator, const T& item)
 {
-    Node *nodeCurrent = iterator.current;
-    Node *nodeNew = new Node(nodeCurrent->prev, nodeCurrent, item);
+    Node *nodeCurrent = iterator.m_current;
+
+    Node *nodeNew = new Node(item, nodeCurrent->prev, nodeCurrent);
     nodeCurrent->prev = nodeCurrent->prev->next = nodeNew;
 
     ++m_size;

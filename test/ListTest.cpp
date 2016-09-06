@@ -8,6 +8,22 @@ using namespace std;
 
 TEST_CASE("List Test", "")
 {
+    SECTION("insert")
+    {
+        auto list = List<int>();
+        int  listExpected[] = { 0, 1, 2, 3, 4 };
+        auto itr = list.begin();
+
+        for (auto i = 0; i < 5; ++i)
+        {
+            itr = list.insert(itr, i);
+
+            REQUIRE(*itr == listExpected[i]);
+
+            ++i;
+        }
+    }
+
     SECTION("clear")
     {
         auto list = List<int>();
