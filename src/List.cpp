@@ -23,36 +23,36 @@ List<T>::Node::Node(const T&& item, Node *prev, Node *next) :
 /* ConstIterator Implementation                                         */
 /************************************************************************/
 template <typename T>
-List<T>::ConstIterator::ConstIterator() : m_current(nullptr)
+List<T>::const_iterator::const_iterator() : m_current(nullptr)
 {
 }
 
 template <typename T>
-List<T>::ConstIterator::ConstIterator(Node *current) : m_current(current)
+List<T>::const_iterator::const_iterator(Node *current) : m_current(current)
 {
 }
 
 template <typename T>
-List<T>::ConstIterator::~ConstIterator()
+List<T>::const_iterator::~const_iterator()
 {
 
 }
 
 template <typename T>
-const T& List<T>::ConstIterator::operator*() const
+const T& List<T>::const_iterator::operator*() const
 {
     return retrieve();
 }
 
 template <typename T>
-typename List<T>::ConstIterator& List<T>::ConstIterator::operator++()
+typename List<T>::const_iterator& List<T>::const_iterator::operator++()
 {
     m_current = m_current->next;
     return *this;
 }
 
 template <typename T>
-typename List<T>::ConstIterator& List<T>::ConstIterator::operator++(int)
+typename List<T>::const_iterator& List<T>::const_iterator::operator++(int)
 {
     // Call copy constructor
     auto old = *this;
@@ -61,13 +61,13 @@ typename List<T>::ConstIterator& List<T>::ConstIterator::operator++(int)
 }
 
 template <typename T>
-typename List<T>::ConstIterator& List<T>::ConstIterator::operator--()
+typename List<T>::const_iterator& List<T>::const_iterator::operator--()
 {
     m_current = m_current->prev;
 }
 
 template <typename T>
-typename List<T>::ConstIterator& List<T>::ConstIterator::operator--(int)
+typename List<T>::const_iterator& List<T>::const_iterator::operator--(int)
 {
     auto old = *this;
     --(*this);
@@ -75,50 +75,50 @@ typename List<T>::ConstIterator& List<T>::ConstIterator::operator--(int)
 }
 
 template <typename T>
-bool List<T>::ConstIterator::operator==(ConstIterator& rhs) const
+bool List<T>::const_iterator::operator==(const_iterator& rhs) const
 {
     return m_current == rhs.m_current;
 }
 
 template <typename T>
-bool List<T>::ConstIterator::operator==(ConstIterator&& rhs) const
+bool List<T>::const_iterator::operator==(const_iterator&& rhs) const
 {
     return m_current == rhs.m_current;
 }
 
 template <typename T>
-bool List<T>::ConstIterator::operator!=(ConstIterator& rhs) const
+bool List<T>::const_iterator::operator!=(const_iterator& rhs) const
 {
     return !(*this == rhs);
 }
 
 template <typename T>
-bool List<T>::ConstIterator::operator!=(ConstIterator&& rhs) const
+bool List<T>::const_iterator::operator!=(const_iterator&& rhs) const
 {
     return !(*this == rhs);
 }
 
 template <typename T>
-T& List<T>::ConstIterator::retrieve() const
+T& List<T>::const_iterator::retrieve() const
 {
     return m_current->item;
 }
 
 template <typename T>
-T& List<T>::Iterator::operator*() const
+T& List<T>::iterator::operator*() const
 {
-    return ConstIterator::retrieve();
+    return const_iterator::retrieve();
 }
 
 template <typename T>
-typename List<T>::Iterator& List<T>::Iterator::operator++()
+typename List<T>::iterator& List<T>::iterator::operator++()
 {
-    ConstIterator::m_current = ConstIterator::m_current->next;
+    const_iterator::m_current = const_iterator::m_current->next;
     return *this;
 }
 
 template <typename T>
-typename List<T>::Iterator& List<T>::Iterator::operator++(int)
+typename List<T>::iterator& List<T>::iterator::operator++(int)
 {
     auto old = *this;
     ++(*this);
@@ -126,14 +126,14 @@ typename List<T>::Iterator& List<T>::Iterator::operator++(int)
 }
 
 template <typename T>
-typename List<T>::Iterator& List<T>::Iterator::operator--()
+typename List<T>::iterator& List<T>::iterator::operator--()
 {
-    ConstIterator::m_current = ConstIterator::m_current->prev;
+    const_iterator::m_current = const_iterator::m_current->prev;
     return *this;
 }
 
 template <typename T>
-typename List<T>::Iterator& List<T>::Iterator::operator--(int)
+typename List<T>::iterator& List<T>::iterator::operator--(int)
 {
     auto old = *this;
     --(*this);
@@ -144,7 +144,7 @@ typename List<T>::Iterator& List<T>::Iterator::operator--(int)
 /* Iterator Implementation                                              */
 /************************************************************************/
 template <typename T>
-List<T>::Iterator::Iterator(Node *current) : ConstIterator(current)
+List<T>::iterator::iterator(Node *current) : const_iterator(current)
 {
 }
 
@@ -213,25 +213,25 @@ List<T>::~List()
 }
 
 template <typename T>
-typename List<T>::Iterator List<T>::begin()
+typename List<T>::iterator List<T>::begin()
 {
     return m_head->next;
 }
 
 template <typename T>
-typename List<T>::Iterator List<T>::end()
+typename List<T>::iterator List<T>::end()
 {
     return m_tail;
 }
 
 template <typename T>
-typename List<T>::ConstIterator List<T>::cbegin() const
+typename List<T>::const_iterator List<T>::cbegin() const
 {
     return m_head->next;
 }
 
 template <typename T>
-typename List<T>::ConstIterator List<T>::cend() const
+typename List<T>::const_iterator List<T>::cend() const
 {
     return m_tail;
 }
@@ -322,7 +322,7 @@ T List<T>::pop_back()
 }
 
 template <typename T>
-typename List<T>::Iterator List<T>::insert(Iterator iterator, const T& item)
+typename List<T>::iterator List<T>::insert(iterator iterator, const T& item)
 {
     Node *nodeCurrent = iterator.m_current;
 
@@ -335,7 +335,7 @@ typename List<T>::Iterator List<T>::insert(Iterator iterator, const T& item)
 }
 
 template <typename T>
-typename List<T>::Iterator List<T>::insert(Iterator iterator, T&& item)
+typename List<T>::iterator List<T>::insert(iterator iterator, T&& item)
 {
     Node *nodeCurrent = iterator.m_current;
     Node *nodeNew = new Node(std::move(item), nodeCurrent->prev, nodeCurrent);
@@ -347,10 +347,10 @@ typename List<T>::Iterator List<T>::insert(Iterator iterator, T&& item)
 }
 
 template <typename T>
-typename List<T>::Iterator List<T>::erase(Iterator iterator)
+typename List<T>::iterator List<T>::erase(iterator itr)
 {
-    Node *nodeCurrent = iterator.m_current;
-    Iterator iteratorReturn{ nodeCurrent->next };
+    Node *nodeCurrent = itr.m_current;
+    iterator itrReturn{ nodeCurrent->next };
 
     nodeCurrent->prev->next = nodeCurrent->next;
     nodeCurrent->next->prev = nodeCurrent->prev;
@@ -358,11 +358,11 @@ typename List<T>::Iterator List<T>::erase(Iterator iterator)
     delete nodeCurrent;
     --m_size;
 
-    return iteratorReturn;
+    return itrReturn;
 }
 
 template <typename T>
-typename List<T>::Iterator List<T>::erase(Iterator from, Iterator to)
+typename List<T>::iterator List<T>::erase(iterator from, iterator to)
 {
     for (auto iterator = from; iterator != to();)
     {

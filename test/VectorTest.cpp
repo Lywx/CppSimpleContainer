@@ -27,9 +27,9 @@ TEST_CASE("Vector Test", "")
     {
         auto vector = Vector<int>(10);
         int  vectorExpected[] = { 1, 2, 3 };
-        vector.push_back(3);
-        vector.push_back(2);
         vector.push_back(1);
+        vector.push_back(2);
+        vector.push_back(3);
 
         auto i = 0;
         for (auto iter = vector.cbegin(); iter != vector.cend(); ++iter)

@@ -5,10 +5,10 @@
 /************************************************************************/
 template <typename T>
 Vector<T>::Vector(int size) :
-    m_capacity(size),
-    m_size(size)
+    m_capacity(size + SPARE_CAPACITY),
+    m_size(0)
 {
-    m_items = new T[m_capacity];
+    m_items = new T[m_capacity] { 0 };
 }
 
 template <typename T>
@@ -16,7 +16,7 @@ Vector<T>::Vector(const Vector& rhs) :
     m_capacity(rhs.m_capacity),
     m_size(rhs.m_size)
 {
-    m_items = new T[m_capacity];
+    m_items = new T[m_capacity] { 0 };
 
     for (auto i = 0; i < rhs.m_size; ++i)
     {
@@ -79,7 +79,7 @@ int Vector<T>::size() const
 template <typename T>
 bool Vector<T>::empty() const
 {
-    return size() == 0;
+    return m_size == 0;
 }
 
 template <typename T>
@@ -89,9 +89,15 @@ T& Vector<T>::operator[](int idx)
 }
 
 template <typename T>
+const T& Vector<T>::operator[](int idx) const
+{
+    return at(idx);
+}
+
+template <typename T>
 T& Vector<T>::at(int idx)
 {
-    if (idx < size())
+    if (idx < m_size)
     {
         return m_items[idx];
     }
@@ -102,27 +108,56 @@ T& Vector<T>::at(int idx)
 }
 
 template <typename T>
-void Vector<T>::push_back(T x)
+const T& Vector<T>::at(int idx) const
 {
-// TODO
+    if (idx < m_size)
+    {
+        return m_items[idx];
+    }
+    else
+    {
+        throw std::out_of_range("Index is out of range.");
+    }
+}
+
+template <typename T>
+void Vector<T>::push_back(T& item)
+{
+    if (m_size == m_capacity)
+    {
+        reserve(m_size * 2);
+    }
+
+    m_items[m_size++] = item;
+}
+
+template <typename T>
+void Vector<T>::push_back(T&& item)
+{
+    if (m_size == m_capacity)
+    {
+        reserve(m_size * 2);
+    }
+
+    m_items[m_size++] = std::move(item);
 }
 
 template <typename T>
 void Vector<T>::pop_back()
 {
-// TODO
+    --m_size;
 }
 
 template <typename T>
 const T& Vector<T>::back() const
 {
-// TODO
+    return at(m_size - 1);
 }
 
 template <typename T>
 const T& Vector<T>::front() const
 {
-// TODO
+    return at(0);
 }
 
 template <typename T>
@@ -134,12 +169,80 @@ void Vector<T>::assign()
 template <typename T>
 void Vector<T>::clear()
 {
-// TODO
+    m_size = 0;
 }
 
 template <typename T>
 void Vector<T>::reserve(int capacity)
 {
-    // TODO
+    using std::swap;
+
+    if (capacity > m_capacity)
+    {
+        auto *itemsNew = new T[capacity] { 0 };
+        for (auto i = 0; i < size(); ++i)
+        {
+            itemsNew[i] = std::move(m_items[i]);
+        }
+
+        m_capacity = capacity;
+        swap(m_items, itemsNew);
+        delete[] itemsNew;
+    }
 }
 
+template <typename T>
+void Vector<T>::resize(int size)
+{
+    if (size > m_capacity)
+    {
+        reserve(size * 2);
+    }
+
+    m_size = size;
+}
+
+template <typename T>
+void Vector<T>::resize(int size, const T& value)
+{
+    if (size > m_capacity)
+    {
+        reserve(size * 2);
+    }
+    else
+    {
+        if (size > m_size)
+        {
+            for (auto i = m_size; i < m_size - 1; ++i)
+            {
+                at(i) = value;
+            }
+        }
+    }
+
+    m_size = size;
+}
+
+template <typename T>
+typename Vector<T>::iterator Vector<T>::begin()
+{
+    return &m_items[0];
+}
+
+template <typename T>
+typename Vector<T>::const_iterator Vector<T>::cbegin() const
+{
+    return &m_items[0];
+}
+
+template <typename T>
+typename Vector<T>::iterator Vector<T>::end()
+{
+    return &m_items[m_size];
+}
+
+template <typename T>
+typename Vector<T>::const_iterator Vector<T>::cend() const
+{
+    return &m_items[m_size];
+}

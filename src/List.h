@@ -12,27 +12,27 @@ class List
 private:
     struct Node;
 public:
-    class ConstIterator
+    class const_iterator
     {
     protected:
-        ConstIterator();
+        const_iterator();
 
         // Allow implicit conversion
-        ConstIterator(Node *current);
+        const_iterator(Node *current);
     public:
-        ~ConstIterator();
+        ~const_iterator();
 
         const T& operator*() const;
 
-        ConstIterator& operator++();
-        ConstIterator& operator++(int);
-        ConstIterator& operator--();
-        ConstIterator& operator--(int);
+        const_iterator& operator++();
+        const_iterator& operator++(int);
+        const_iterator& operator--();
+        const_iterator& operator--(int);
 
-        bool operator==(ConstIterator& rhs) const;
-        bool operator==(ConstIterator&& rhs) const;
-        bool operator!=(ConstIterator& rhs) const;
-        bool operator!=(ConstIterator&& rhs) const;
+        bool operator==(const_iterator& rhs) const;
+        bool operator==(const_iterator&& rhs) const;
+        bool operator!=(const_iterator& rhs) const;
+        bool operator!=(const_iterator&& rhs) const;
 
     protected:
         T& retrieve() const;
@@ -42,17 +42,17 @@ public:
         friend class List;
     };
 
-    class Iterator : public ConstIterator
+    class iterator : public const_iterator
     {
     public:
         // Allow implicit conversion
-        Iterator(Node *current);
+        iterator(Node *current);
 
         T& operator*() const;
-        Iterator& operator++();
-        Iterator& operator++(int);
-        Iterator& operator--();
-        Iterator& operator--(int);
+        iterator& operator++();
+        iterator& operator++(int);
+        iterator& operator--();
+        iterator& operator--(int);
 
         friend class List;
     };
@@ -85,16 +85,16 @@ public:
     ~List();
 
     // First iterator after head
-    Iterator begin();
+    iterator begin();
 
     // Iterator for tail
-    Iterator end();
+    iterator end();
 
     // First iterator after head
-    ConstIterator cbegin() const;
+    const_iterator cbegin() const;
 
     // Iterator for tail
-    ConstIterator cend() const;
+    const_iterator cend() const;
 
     int  size() const;
     bool empty() const;
@@ -119,11 +119,11 @@ public:
     T pop_back();
 
     // Insert item before iterator
-    Iterator insert(Iterator iterator, const T& item);
-    Iterator insert(Iterator iterator, T&& item);
+    iterator insert(iterator iterator, const T& item);
+    iterator insert(iterator iterator, T&& item);
 
-    Iterator erase(Iterator iterator);
-    Iterator erase(Iterator from, Iterator to);
+    iterator erase(iterator iterator);
+    iterator erase(iterator from, iterator to);
 
 private:
     void init();
