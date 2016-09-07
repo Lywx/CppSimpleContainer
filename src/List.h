@@ -86,9 +86,11 @@ public:
 
     // First iterator after head
     iterator begin();
+    const_iterator begin() const;
 
     // Iterator for tail
     iterator end();
+    const_iterator end() const;
 
     // First iterator after head
     const_iterator cbegin() const;
@@ -119,8 +121,8 @@ public:
     T pop_back();
 
     // Insert item before iterator
-    iterator insert(iterator iterator, const T& item);
-    iterator insert(iterator iterator, T&& item);
+    iterator insert(iterator iter, const T& item);
+    iterator insert(iterator iter, T&& item);
 
     iterator erase(iterator iterator);
     iterator erase(iterator from, iterator to);
@@ -132,7 +134,7 @@ private:
     Node *m_tail;
     int   m_size;
 
-    friend void swap(List& lhs, List& rhs)
+    friend void swap(List& lhs, List& rhs) noexcept
     {
         using std::swap;
 

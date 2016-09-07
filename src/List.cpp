@@ -219,7 +219,19 @@ typename List<T>::iterator List<T>::begin()
 }
 
 template <typename T>
+typename List<T>::const_iterator List<T>::begin() const
+{
+    return m_head->next;
+}
+
+template <typename T>
 typename List<T>::iterator List<T>::end()
+{
+    return m_tail;
+}
+
+template <typename T>
+typename List<T>::const_iterator List<T>::end() const
 {
     return m_tail;
 }
@@ -322,9 +334,9 @@ T List<T>::pop_back()
 }
 
 template <typename T>
-typename List<T>::iterator List<T>::insert(iterator iterator, const T& item)
+typename List<T>::iterator List<T>::insert(iterator iter, const T& item)
 {
-    Node *nodeCurrent = iterator.m_current;
+    Node *nodeCurrent = iter.m_current;
 
     Node *nodeNew = new Node(item, nodeCurrent->prev, nodeCurrent);
     nodeCurrent->prev = nodeCurrent->prev->next = nodeNew;
@@ -335,9 +347,9 @@ typename List<T>::iterator List<T>::insert(iterator iterator, const T& item)
 }
 
 template <typename T>
-typename List<T>::iterator List<T>::insert(iterator iterator, T&& item)
+typename List<T>::iterator List<T>::insert(iterator iter, T&& item)
 {
-    Node *nodeCurrent = iterator.m_current;
+    Node *nodeCurrent = iter.m_current;
     Node *nodeNew = new Node(std::move(item), nodeCurrent->prev, nodeCurrent);
     nodeCurrent->prev = nodeCurrent->prev->next = nodeNew;
 

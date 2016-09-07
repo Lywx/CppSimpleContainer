@@ -1,11 +1,8 @@
 #include "catch.hpp"
 
-#include <iostream>
-#include <string>
 #include <Vector.cpp>
 
 using namespace std;
-
 TEST_CASE("Vector Test", "")
 {
     SECTION("clear")
