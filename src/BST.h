@@ -9,7 +9,45 @@ class Bst
     /************************************************************************/
     /* Inner Class Declaration                                              */
     /************************************************************************/
+private:
+    struct Node;
 public:
+    class const_iterator
+    {
+    protected:
+        const_iterator();
+
+        // Allow implicit conversion from Node*
+        const_iterator(Node *current);
+
+    public:
+        ~const_iterator();
+
+        const T& operator*() const;
+
+        const_iterator& operator++();
+        const_iterator& operator++(int);
+        const_iterator& operator--();
+        const_iterator& operator--(int);
+
+        bool operator==(const_iterator& rhs) const;
+        bool operator==(const_iterator&& rhs) const;
+        bool operator!=(const_iterator& rhs) const;
+        bool operator!=(const_iterator&& rhs) const;
+
+    protected:
+        T& retrieve() const;
+
+        Node *m_current;
+
+        friend class Bst;
+    };
+
+    class iterator : public const_iterator
+    {
+
+    };
+
     struct Node
     {
         T item;
@@ -41,6 +79,7 @@ public:
     const T& findMin() const;
 
     bool contains(const T& item) const;
+    iterator find(const T& item) const;
     void insert(const T& item);
     void insert(T&& item);
     void remove(const T& item);
@@ -54,4 +93,7 @@ private:
 
     const Node *findMax(Node *node) const;
     const Node *findMin(Node *node) const;
+
+    void insert(Node *&node, const T& item);
+    void insert(Node *&node, T&& item);
 };
