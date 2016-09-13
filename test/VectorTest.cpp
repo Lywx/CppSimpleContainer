@@ -1,6 +1,7 @@
 #include "catch.hpp"
 
 #include <Vector.cpp>
+#include <iostream>
 
 using namespace std;
 TEST_CASE("Vector Test", "")
