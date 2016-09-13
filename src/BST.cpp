@@ -4,6 +4,83 @@
 /* Inner Class Implementation                                           */
 /************************************************************************/
 template <typename T>
+Bst<T>::const_iterator::const_iterator()
+    : m_current(nullptr)
+{
+}
+
+template <typename T>
+Bst<T>::const_iterator::const_iterator(Node *current)
+    : m_current(current)
+{
+}
+
+template <typename T>
+Bst<T>::const_iterator::~const_iterator()
+{
+}
+
+template <typename T>
+const T& Bst<T>::const_iterator::operator*() const
+{
+    return m_current->item;
+}
+
+template <typename T>
+typename Bst<T>::const_iterator& Bst<T>::const_iterator::operator++()
+{
+    return m_current->left != nullptr ? m_current->left : m_current->right;
+}
+
+template <typename T>
+typename Bst<T>::const_iterator& Bst<T>::const_iterator::operator++(int)
+{
+    // TOOD
+}
+
+template <typename T>
+typename Bst<T>::const_iterator& Bst<T>::const_iterator::operator--()
+{
+    // TOOD
+}
+
+template <typename T>
+typename Bst<T>::const_iterator& Bst<T>::const_iterator::operator--(int)
+{
+    // TOOD
+}
+
+template <typename T>
+bool Bst<T>::const_iterator::operator==(const_iterator& rhs) const
+{
+    // TOOD
+}
+
+template <typename T>
+bool Bst<T>::const_iterator::operator==(const_iterator&& rhs) const
+{
+    // TOOD
+}
+
+template <typename T>
+bool Bst<T>::const_iterator::operator!=(const_iterator& rhs) const
+{
+    // TOOD
+}
+
+template <typename T>
+bool Bst<T>::const_iterator::operator!=(const_iterator&& rhs) const
+{
+    // TOOD
+}
+
+template <typename T>
+T& Bst<T>::const_iterator::retrieve() const
+{
+    // TOOD
+}
+
+template <typename T>
 Bst<T>::Node::Node(const T& item, Node *left, Node *right) :
     item(item),
     left(left),
@@ -115,40 +192,28 @@ bool Bst<T>::contains(const T& item) const
 template <typename T>
 void Bst<T>::insert(const T& item)
 {
-    Node *node = root;
-    while (node != nullptr)
-    {
-        // TODO
-        if (node->item > item)
-        {
-            node = node->left;
-        }
-        else if (node->item < item)
-        {
-            node = node->right;
-        }
-        else
-        {
-            // Duplication
-        }
-    }
+    insert(root, item);
 }
 
 template <typename T>
 void Bst<T>::insert(T&& item)
 {
-    // TODO
+    insert(root, std::move(item));
 }
 
 template <typename T>
 void Bst<T>::remove(const T& item)
 {
-    // TODO
+    if (find(item))
+    {
+        // TODO
+    }
 }
 
 template <typename T>
 bool Bst<T>::contains(const Node *node, const T& item)
 {
+    // TODO find?
     if (node == nullptr)
     {
         return false;
@@ -167,6 +232,7 @@ bool Bst<T>::contains(const Node *node, const T& item)
     }
 }
 
+// Non-recursive contains
 /*
     template <typename T>
     bool Bst<T>::contains(const Node *node, const T& item)
@@ -207,8 +273,7 @@ void Bst<T>::clear(Node *node)
 template <typename T>
 typename Bst<T>::Node *Bst<T>::clone(Node *node) const
 {
-    new Node()
-    return
+    // TODO
 }
 
 template <typename T>
@@ -231,4 +296,46 @@ const typename Bst<T>::Node *Bst<T>::findMin(Node *node) const
     }
 
     return node;
+}
+
+template <typename T>
+void Bst<T>::insert(Node *&node, const T& item)
+{
+    if (node == nullptr)
+    {
+        node = new Node(item, nullptr, nullptr);
+    }
+    else if (node->item > item)
+    {
+        insert(node->left, item);
+    }
+    else if (node->item < item)
+    {
+        insert(node->right, item);
+    }
+    else
+    {
+        ; // Duplication
+    }
+}
+
+template <typename T>
+void Bst<T>::insert(Node *&node, T&& item)
+{
+    if (node == nullptr)
+    {
+        node = new Node(item, nullptr, nullptr);
+    }
+    else if (node->item > item)
+    {
+        insert(node->left, std::move(item));
+    }
+    else if (node->item < item)
+    {
+        insert(node->right, std::move(item));
+    }
+    else
+    {
+        ; // Duplication
+    }
 }

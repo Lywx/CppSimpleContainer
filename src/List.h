@@ -17,7 +17,7 @@ public:
     protected:
         const_iterator();
 
-        // Allow implicit conversion
+        // Allow implicit conversion from Node*
         const_iterator(Node *current);
     public:
         ~const_iterator();

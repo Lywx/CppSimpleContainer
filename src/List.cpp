@@ -23,12 +23,14 @@ List<T>::Node::Node(const T&& item, Node *prev, Node *next) :
 /* ConstIterator Implementation                                         */
 /************************************************************************/
 template <typename T>
-List<T>::const_iterator::const_iterator() : m_current(nullptr)
+List<T>::const_iterator::const_iterator()
+    : m_current(nullptr)
 {
 }
 
 template <typename T>
-List<T>::const_iterator::const_iterator(Node *current) : m_current(current)
+List<T>::const_iterator::const_iterator(Node *current)
+    : m_current(current)
 {
 }
 
