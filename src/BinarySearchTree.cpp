@@ -1,87 +1,87 @@
-#include "Bst.h"
+#include "BinarySearchTree.h"
 
 /************************************************************************/
 /* Inner Class Implementation                                           */
 /************************************************************************/
 template <typename T>
-Bst<T>::const_iterator::const_iterator()
+BinarySearchTree<T>::const_iterator::const_iterator()
     : m_current(nullptr)
 {
 }
 
 template <typename T>
-Bst<T>::const_iterator::const_iterator(Node *current)
+BinarySearchTree<T>::const_iterator::const_iterator(Node *current)
     : m_current(current)
 {
 }
 
 template <typename T>
-Bst<T>::const_iterator::~const_iterator()
+BinarySearchTree<T>::const_iterator::~const_iterator()
 {
 }
 
 template <typename T>
-const T& Bst<T>::const_iterator::operator*() const
+const T& BinarySearchTree<T>::const_iterator::operator*() const
 {
     return m_current->item;
 }
 
 template <typename T>
-typename Bst<T>::const_iterator& Bst<T>::const_iterator::operator++()
+typename BinarySearchTree<T>::const_iterator& BinarySearchTree<T>::const_iterator::operator++()
 {
     return m_current->left != nullptr ? m_current->left : m_current->right;
 }
 
 template <typename T>
-typename Bst<T>::const_iterator& Bst<T>::const_iterator::operator++(int)
+typename BinarySearchTree<T>::const_iterator& BinarySearchTree<T>::const_iterator::operator++(int)
 {
     // TOOD
 }
 
 template <typename T>
-typename Bst<T>::const_iterator& Bst<T>::const_iterator::operator--()
+typename BinarySearchTree<T>::const_iterator& BinarySearchTree<T>::const_iterator::operator--()
 {
     // TOOD
 }
 
 template <typename T>
-typename Bst<T>::const_iterator& Bst<T>::const_iterator::operator--(int)
+typename BinarySearchTree<T>::const_iterator& BinarySearchTree<T>::const_iterator::operator--(int)
 {
     // TOOD
 }
 
 template <typename T>
-bool Bst<T>::const_iterator::operator==(const_iterator& rhs) const
+bool BinarySearchTree<T>::const_iterator::operator==(const_iterator& rhs) const
 {
     // TOOD
 }
 
 template <typename T>
-bool Bst<T>::const_iterator::operator==(const_iterator&& rhs) const
+bool BinarySearchTree<T>::const_iterator::operator==(const_iterator&& rhs) const
 {
     // TOOD
 }
 
 template <typename T>
-bool Bst<T>::const_iterator::operator!=(const_iterator& rhs) const
+bool BinarySearchTree<T>::const_iterator::operator!=(const_iterator& rhs) const
 {
     // TOOD
 }
 
 template <typename T>
-bool Bst<T>::const_iterator::operator!=(const_iterator&& rhs) const
+bool BinarySearchTree<T>::const_iterator::operator!=(const_iterator&& rhs) const
 {
     // TOOD
 }
 
 template <typename T>
-T& Bst<T>::const_iterator::retrieve() const
+T& BinarySearchTree<T>::const_iterator::retrieve() const
 {
     // TOOD
 }
 
 template <typename T>
-Bst<T>::Node::Node(const T& item, Node *left, Node *right) :
+BinarySearchTree<T>::Node::Node(const T& item, Node *left, Node *right) :
     item(item),
     left(left),
     right(right)
@@ -89,7 +89,7 @@ Bst<T>::Node::Node(const T& item, Node *left, Node *right) :
 }
 
 template <typename T>
-Bst<T>::Node::Node(T&& item, Node *left, Node *right) :
+BinarySearchTree<T>::Node::Node(T&& item, Node *left, Node *right) :
     item(std::move(item)),
     left(left),
     right(right)
@@ -100,42 +100,42 @@ Bst<T>::Node::Node(T&& item, Node *left, Node *right) :
 /* Class Implementation                                                 */
 /************************************************************************/
 template <typename T>
-Bst<T>::Bst() :
+BinarySearchTree<T>::BinarySearchTree() :
     root(nullptr)
 {
 }
 
 template <typename T>
-Bst<T>::~Bst()
+BinarySearchTree<T>::~BinarySearchTree()
 {
     clear();
 }
 
 template <typename T>
-Bst<T>::Bst(const Bst& rhs)
+BinarySearchTree<T>::BinarySearchTree(const BinarySearchTree& rhs)
 {
     root = clone(rhs.root);
 }
 
 template <typename T>
-Bst<T>& Bst<T>::operator=(const Bst& rhs)
+BinarySearchTree<T>& BinarySearchTree<T>::operator=(const BinarySearchTree& rhs)
 {
     using std::swap;
 
-    Bst copy = rhs;
+    BinarySearchTree copy = rhs;
     swap(*this, copy);
     return *this;
 }
 
 template <typename T>
-Bst<T>::Bst(Bst&& rhs) noexcept :
+BinarySearchTree<T>::BinarySearchTree(BinarySearchTree&& rhs) noexcept :
     root(rhs.root)
 {
     rhs.root = nullptr;
 }
 
 template <typename T>
-Bst<T>& Bst<T>::operator=(Bst&& rhs) noexcept
+BinarySearchTree<T>& BinarySearchTree<T>::operator=(BinarySearchTree&& rhs) noexcept
 {
     using std::swap;
 
@@ -144,19 +144,19 @@ Bst<T>& Bst<T>::operator=(Bst&& rhs) noexcept
 }
 
 template <typename T>
-bool Bst<T>::empty() const
+bool BinarySearchTree<T>::empty() const
 {
     return root == nullptr;
 }
 
 template <typename T>
-void Bst<T>::clear()
+void BinarySearchTree<T>::clear()
 {
     clear(root);
 }
 
 template <typename T>
-const T& Bst<T>::findMax() const
+const T& BinarySearchTree<T>::findMax() const
 {
     auto *node = findMax(root);
     if (node != nullptr)
@@ -170,7 +170,7 @@ const T& Bst<T>::findMax() const
 }
 
 template <typename T>
-const T& Bst<T>::findMin() const
+const T& BinarySearchTree<T>::findMin() const
 {
     auto *node = findMin(root);
     if (node != nullptr)
@@ -184,25 +184,31 @@ const T& Bst<T>::findMin() const
 }
 
 template <typename T>
-bool Bst<T>::contains(const T& item) const
+bool BinarySearchTree<T>::contains(const T& item) const
 {
     return contains(root, item);
 }
 
 template <typename T>
-void Bst<T>::insert(const T& item)
+typename BinarySearchTree<T>::iterator BinarySearchTree<T>::find(const T& item) const
+{
+    // TODO
+}
+
+template <typename T>
+void BinarySearchTree<T>::insert(const T& item)
 {
     insert(root, item);
 }
 
 template <typename T>
-void Bst<T>::insert(T&& item)
+void BinarySearchTree<T>::insert(T&& item)
 {
     insert(root, std::move(item));
 }
 
 template <typename T>
-void Bst<T>::remove(const T& item)
+void BinarySearchTree<T>::remove(const T& item)
 {
     if (find(item))
     {
@@ -211,7 +217,7 @@ void Bst<T>::remove(const T& item)
 }
 
 template <typename T>
-bool Bst<T>::contains(const Node *node, const T& item)
+bool BinarySearchTree<T>::contains(const Node *node, const T& item)
 {
     // TODO find?
     if (node == nullptr)
@@ -258,7 +264,7 @@ bool Bst<T>::contains(const Node *node, const T& item)
 */
 
 template <typename T>
-void Bst<T>::clear(Node *node)
+void BinarySearchTree<T>::clear(Node *node)
 {
     if (node != nullptr)
     {
@@ -271,13 +277,13 @@ void Bst<T>::clear(Node *node)
 }
 
 template <typename T>
-typename Bst<T>::Node *Bst<T>::clone(Node *node) const
+typename BinarySearchTree<T>::Node *BinarySearchTree<T>::clone(Node *node) const
 {
     // TODO
 }
 
 template <typename T>
-const typename Bst<T>::Node *Bst<T>::findMax(Node *node) const
+const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::findMax(Node *node) const
 {
     while (node != nullptr && node->right != nullptr)
     {
@@ -288,7 +294,7 @@ const typename Bst<T>::Node *Bst<T>::findMax(Node *node) const
 }
 
 template <typename T>
-const typename Bst<T>::Node *Bst<T>::findMin(Node *node) const
+const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::findMin(Node *node) const
 {
     while (node != nullptr && node->left != nullptr)
     {
@@ -299,7 +305,7 @@ const typename Bst<T>::Node *Bst<T>::findMin(Node *node) const
 }
 
 template <typename T>
-void Bst<T>::insert(Node *&node, const T& item)
+void BinarySearchTree<T>::insert(Node *&node, const T& item)
 {
     if (node == nullptr)
     {
@@ -320,7 +326,7 @@ void Bst<T>::insert(Node *&node, const T& item)
 }
 
 template <typename T>
-void Bst<T>::insert(Node *&node, T&& item)
+void BinarySearchTree<T>::insert(Node *&node, T&& item)
 {
     if (node == nullptr)
     {

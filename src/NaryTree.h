@@ -1,31 +1,31 @@
 #pragma once
 
 template <typename T>
-class Tree
+class NaryTree
 {
 public:
     /************************************************************************/
     /* Internal Class Implementation                                        */
     /************************************************************************/
-    struct TreeNode
+    struct Node
     {
         T item;
 
-        TreeNode *childFirst;
-        TreeNode *siblingNext;
+        Node *childFirst;
+        Node *siblingNext;
     };
 
-    Tree();
-    ~Tree();
+    NaryTree();
+    ~NaryTree();
 
     // Copy Semantics
-    Tree(const Tree& t);
-    Tree& operator=(const Tree& rhs);
+    NaryTree(const NaryTree& t);
+    NaryTree& operator=(const NaryTree& rhs);
 
     // Move Semantics
-    Tree(Tree&& t) noexcept;
-    Tree& operator=(Tree&& rhs) noexcept;
+    NaryTree(NaryTree&& t) noexcept;
+    NaryTree& operator=(NaryTree&& rhs) noexcept;
 
 private:
-    TreeNode root;
+    Node root;
 };

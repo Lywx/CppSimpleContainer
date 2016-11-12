@@ -4,11 +4,16 @@
 /* Constructors and Destructor                                          */
 /************************************************************************/
 template <typename T>
-Vector<T>::Vector(int size) :
-    m_capacity(size + SPARE_CAPACITY),
+Vector<T>::Vector(int capacity) :
+    m_capacity(capacity),
     m_size(0)
 {
     m_items = new T[m_capacity] { 0 };
+}
+
+template <typename T>
+Vector<T>::Vector() : Vector(SPARE_CAPACITY)
+{
 }
 
 template <typename T>

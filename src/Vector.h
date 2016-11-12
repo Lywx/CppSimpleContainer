@@ -12,7 +12,8 @@ public:
     /************************************************************************/
     /* Constructors and Destructor                                          */
     /************************************************************************/
-    explicit Vector(int size);
+    explicit Vector(int capacity);
+    explicit Vector();
 
     // Copy Semantics
     Vector(const Vector& rhs);

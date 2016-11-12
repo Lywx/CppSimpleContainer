@@ -3,8 +3,10 @@
 #include <stdexcept>
 #include <algorithm>
 
+// Reference: Weiss M.A. Data Structures and Algorithm Analysis in C++, 4th, 2014
+// Implementation: TODO.
 template <typename T>
-class Bst
+class BinarySearchTree
 {
     /************************************************************************/
     /* Inner Class Declaration                                              */
@@ -40,7 +42,7 @@ public:
 
         Node *m_current;
 
-        friend class Bst;
+        friend class BinarySearchTree;
     };
 
     class iterator : public const_iterator
@@ -50,7 +52,7 @@ public:
 
     struct Node
     {
-        T item;
+        T     item;
         Node *left;
         Node *right;
 
@@ -61,39 +63,39 @@ public:
     /************************************************************************/
     /* Class Declaration                                                    */
     /************************************************************************/
-    Bst();
-    ~Bst();
+    BinarySearchTree();
+    ~BinarySearchTree();
 
     // Copy Semantics
-    Bst(const Bst& rhs);
-    Bst& operator=(const Bst& rhs);
+    BinarySearchTree(const BinarySearchTree& rhs);
+    BinarySearchTree& operator=(const BinarySearchTree& rhs);
 
     // Move Semantics
-    Bst(Bst&& rhs) noexcept;
-    Bst& operator=(Bst&& rhs) noexcept;
+    BinarySearchTree(BinarySearchTree&& rhs) noexcept;
+    BinarySearchTree& operator=(BinarySearchTree&& rhs) noexcept;
 
-    bool empty() const;
-    void clear();
+    bool         empty() const;
+    void         clear();
 
-    const T& findMax() const;
-    const T& findMin() const;
+    const T&     findMax() const;
+    const T&     findMin() const;
 
-    bool contains(const T& item) const;
-    iterator find(const T& item) const;
-    void insert(const T& item);
-    void insert(T&& item);
-    void remove(const T& item);
+    bool         contains(const T& item) const;
+    iterator     find(const T& item) const;
+    void         insert(const T& item);
+    void         insert(T&& item);
+    void         remove(const T& item);
 
 private:
     Node *root;
 
-    bool contains(const Node *node, const T& item);
-    void clear(Node *node);
-    Node *clone(Node *node) const;
+    bool        contains(const Node *node, const T& item);
+    void        clear(Node *node);
+    Node       *clone(Node *node) const;
 
     const Node *findMax(Node *node) const;
     const Node *findMin(Node *node) const;
 
-    void insert(Node *&node, const T& item);
-    void insert(Node *&node, T&& item);
+    void        insert(Node *&node, const T& item);
+    void        insert(Node *&node, T&& item);
 };

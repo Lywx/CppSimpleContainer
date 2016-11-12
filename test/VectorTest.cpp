@@ -1,7 +1,6 @@
 #include "catch.hpp"
 
 #include <Vector.cpp>
-#include <iostream>
 
 using namespace std;
 TEST_CASE("Vector Test", "")
@@ -35,5 +34,10 @@ TEST_CASE("Vector Test", "")
             REQUIRE(*iter == vectorExpected [i]);
             ++i;
         }
+    }
+
+    SECTION("")
+    {
+
     }
 }
