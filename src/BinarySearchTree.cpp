@@ -1,83 +1,245 @@
 #include "BinarySearchTree.h"
 
+#include <algorithm>
+#include <stdexcept>
+#include <utility>
+
 /************************************************************************/
 /* Inner Class Implementation                                           */
 /************************************************************************/
 template <typename T>
 BinarySearchTree<T>::const_iterator::const_iterator()
-    : m_current(nullptr)
+    : m_traversalTaskStack(),
+      m_iterationNodeCurrent(nullptr)
 {
 }
 
 template <typename T>
 BinarySearchTree<T>::const_iterator::const_iterator(Node *current)
-    : m_current(current)
+    : m_traversalTaskStack(),
+      m_iterationNodeCurrent(nullptr)
 {
+    if (current != nullptr)
+    {
+        m_traversalTaskStack.emplace(current, 0);
+    }
 }
 
 template <typename T>
 BinarySearchTree<T>::const_iterator::~const_iterator()
 {
+    while (!m_traversalTaskStack.empty())
+    {
+        m_traversalTaskStack.pop();
+    }
 }
 
 template <typename T>
 const T& BinarySearchTree<T>::const_iterator::operator*() const
 {
-    return m_current->item;
-}
-
-template <typename T>
-typename BinarySearchTree<T>::const_iterator& BinarySearchTree<T>::const_iterator::operator++()
-{
-    return m_current->left != nullptr ? m_current->left : m_current->right;
-}
-
-template <typename T>
-typename BinarySearchTree<T>::const_iterator& BinarySearchTree<T>::const_iterator::operator++(int)
-{
-    // TOOD
-}
-
-template <typename T>
-typename BinarySearchTree<T>::const_iterator& BinarySearchTree<T>::const_iterator::operator--()
-{
-    // TOOD
-}
-
-template <typename T>
-typename BinarySearchTree<T>::const_iterator& BinarySearchTree<T>::const_iterator::operator--(int)
-{
-    // TOOD
+    return m_iterationNodeCurrent->item;
 }
 
 template <typename T>
 bool BinarySearchTree<T>::const_iterator::operator==(const_iterator& rhs) const
 {
-    // TOOD
+    return m_iterationNodeCurrent == rhs.m_iterationNodeCurrent
+           && m_traversalTaskStack == rhs.m_traversalTaskStack;
 }
 
 template <typename T>
 bool BinarySearchTree<T>::const_iterator::operator==(const_iterator&& rhs) const
 {
-    // TOOD
+    return m_iterationNodeCurrent == rhs.m_iterationNodeCurrent
+           && m_traversalTaskStack == rhs.m_traversalTaskStack;
 }
 
 template <typename T>
 bool BinarySearchTree<T>::const_iterator::operator!=(const_iterator& rhs) const
 {
-    // TOOD
+    return !(*this == rhs);
 }
 
 template <typename T>
 bool BinarySearchTree<T>::const_iterator::operator!=(const_iterator&& rhs) const
 {
-    // TOOD
+    return !(*this == rhs);
 }
-
 template <typename T>
 T& BinarySearchTree<T>::const_iterator::retrieve() const
 {
-    // TOOD
+    return m_iterationNodeCurrent->item;
+}
+
+template <typename T>
+BinarySearchTree<T>::const_preorder_iterator::const_preorder_iterator()
+{
+}
+
+template <typename T>
+BinarySearchTree<T>::const_preorder_iterator::const_preorder_iterator(Node *current)
+    : const_iterator(current)
+{
+    ++(*this);
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_preorder_iterator& BinarySearchTree<T>::const_preorder_iterator::operator++()
+{
+    if (m_traversalTaskStack.empty())
+    {
+        m_iterationNodeCurrent = nullptr;
+        return *this;
+    }
+
+    m_iterationNodeCurrent = m_traversalTaskStack.top().first;
+    m_traversalTaskStack.pop();
+
+    if (m_iterationNodeCurrent->right != nullptr)
+    {
+        m_traversalTaskStack.emplace(m_iterationNodeCurrent->right, 0);
+    }
+
+    if (m_iterationNodeCurrent->left != nullptr)
+    {
+        m_traversalTaskStack.emplace(m_iterationNodeCurrent->left, 0);
+    }
+
+    return *this;
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_preorder_iterator BinarySearchTree<T>::const_preorder_iterator::operator++(int)
+{
+    auto old = *this;
+    ++(*this);
+    return old;
+}
+
+template <typename T>
+BinarySearchTree<T>::const_inorder_iterator::const_inorder_iterator()
+{
+}
+
+template <typename T>
+BinarySearchTree<T>::const_inorder_iterator::const_inorder_iterator(Node *current)
+    : const_iterator(current)
+{
+    ++(*this);
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_inorder_iterator& BinarySearchTree<T>::const_inorder_iterator::operator++()
+{
+    if (m_traversalTaskStack.empty())
+    {
+        m_iterationNodeCurrent = nullptr;
+        return *this;
+    }
+
+    auto traversalNodeUpdated = false;
+    while(!traversalNodeUpdated)
+    {
+        auto traversalTaskCurrent = m_traversalTaskStack.top();
+        m_traversalTaskStack.pop();
+        auto traversalNodeCurrent = traversalTaskCurrent.first;
+        auto& traversalTaskVisit = traversalTaskCurrent.second;
+
+        if (++traversalTaskVisit == 1)
+        {
+            m_traversalTaskStack.push(traversalTaskCurrent);
+
+            if (traversalNodeCurrent->left != nullptr)
+            {
+                m_traversalTaskStack.emplace(traversalNodeCurrent->left, 0);
+            }
+        }
+        else if (traversalTaskVisit == 2)
+        {
+            m_iterationNodeCurrent = traversalNodeCurrent;
+            traversalNodeUpdated = true;
+
+            if (traversalNodeCurrent->right != nullptr)
+            {
+                m_traversalTaskStack.emplace(traversalNodeCurrent->right, 0);
+            }
+        }
+    }
+
+    return *this;
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_inorder_iterator BinarySearchTree<T>::const_inorder_iterator::operator++(int)
+{
+    auto old = *this;
+    ++(*this);
+    return old;
+}
+
+template <typename T>
+BinarySearchTree<T>::const_postorder_iterator::const_postorder_iterator()
+{
+}
+
+template <typename T>
+BinarySearchTree<T>::const_postorder_iterator::const_postorder_iterator(Node *current)
+    : const_iterator(current)
+{
+    ++(*this);
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_postorder_iterator& BinarySearchTree<T>::const_postorder_iterator::operator++()
+{
+    if (m_traversalTaskStack.empty())
+    {
+        m_iterationNodeCurrent = nullptr;
+        return *this;
+    }
+
+    auto traversalNodeUpdated = false;
+    while(!traversalNodeUpdated)
+    {
+        auto traversalTaskCurrent = m_traversalTaskStack.top();
+        m_traversalTaskStack.pop();
+        auto traversalNodeCurrent = traversalTaskCurrent.first;
+        auto& traversalTaskVisit = traversalTaskCurrent.second;
+
+        if (++traversalTaskVisit == 1)
+        {
+            m_traversalTaskStack.push(traversalTaskCurrent);
+
+            if (traversalNodeCurrent->left != nullptr)
+            {
+                m_traversalTaskStack.emplace(traversalNodeCurrent->left, 0);
+            }
+        }
+        else if (traversalTaskVisit == 2)
+        {
+            m_traversalTaskStack.push(traversalTaskCurrent);
+
+            if (traversalNodeCurrent->right != nullptr)
+            {
+                m_traversalTaskStack.emplace(traversalNodeCurrent->right, 0);
+            }
+        }
+        else
+        {
+            m_iterationNodeCurrent = traversalNodeCurrent;
+            traversalNodeUpdated = true;
+        }
+    }
+
+    return *this;
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_postorder_iterator BinarySearchTree<T>::const_postorder_iterator::operator++(int)
+{
+    auto old = *this;
+    ++(*this);
+    return old;
 }
 
 template <typename T>
@@ -101,7 +263,7 @@ BinarySearchTree<T>::Node::Node(T&& item, Node *left, Node *right) :
 /************************************************************************/
 template <typename T>
 BinarySearchTree<T>::BinarySearchTree() :
-    root(nullptr)
+    m_root(nullptr)
 {
 }
 
@@ -114,7 +276,7 @@ BinarySearchTree<T>::~BinarySearchTree()
 template <typename T>
 BinarySearchTree<T>::BinarySearchTree(const BinarySearchTree& rhs)
 {
-    root = clone(rhs.root);
+    m_root = clone(rhs.m_root);
 }
 
 template <typename T>
@@ -129,9 +291,9 @@ BinarySearchTree<T>& BinarySearchTree<T>::operator=(const BinarySearchTree& rhs)
 
 template <typename T>
 BinarySearchTree<T>::BinarySearchTree(BinarySearchTree&& rhs) noexcept :
-    root(rhs.root)
+    m_root(rhs.m_root)
 {
-    rhs.root = nullptr;
+    rhs.m_root = nullptr;
 }
 
 template <typename T>
@@ -139,98 +301,144 @@ BinarySearchTree<T>& BinarySearchTree<T>::operator=(BinarySearchTree&& rhs) noex
 {
     using std::swap;
 
-    swap(root, rhs.root);
+    swap(m_root, rhs.m_root);
     return *this;
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_preorder_iterator BinarySearchTree<T>::cbegin_preorder() const
+{
+    return m_root;
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_preorder_iterator BinarySearchTree<T>::cend_preorder() const
+{
+    return nullptr;
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_inorder_iterator BinarySearchTree<T>::cbegin_inorder() const
+{
+    return m_root;
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_inorder_iterator BinarySearchTree<T>::cend_inorder() const
+{
+    return nullptr;
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_postorder_iterator BinarySearchTree<T>::cbegin_postorder() const
+{
+    return m_root;
+}
+
+template <typename T>
+typename BinarySearchTree<T>::const_postorder_iterator BinarySearchTree<T>::cend_postorder() const
+{
+    return nullptr;
 }
 
 template <typename T>
 bool BinarySearchTree<T>::empty() const
 {
-    return root == nullptr;
+    return m_root == nullptr;
 }
 
 template <typename T>
 void BinarySearchTree<T>::clear()
 {
-    clear(root);
+    clear(m_root);
 }
 
 template <typename T>
-const T& BinarySearchTree<T>::findMax() const
+const T& BinarySearchTree<T>::max() const
 {
-    auto *node = findMax(root);
-    if (node != nullptr)
-    {
-        return node->item;
-    }
-    else
-    {
-        throw std::underflow_error("Bst is empty.");
-    }
+    auto *node = find_max();
+    return node->item;
 }
 
 template <typename T>
-const T& BinarySearchTree<T>::findMin() const
+const T& BinarySearchTree<T>::min() const
 {
-    auto *node = findMin(root);
-    if (node != nullptr)
+    auto *node = find_min();
+    return node->item;
+}
+
+template <typename T>
+const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::find_max() const
+{
+    if (empty())
     {
-        return node->item;
+        throw std::underflow_error("Binary search tree is empty.");
     }
-    else
+
+    return find_max(m_root);
+}
+
+template <typename T>
+const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::find_min() const
+{
+    if (empty())
     {
-        throw std::underflow_error("Bst is empty.");
+        throw std::underflow_error("Binary search tree is empty.");
     }
+
+    return find_min(m_root);
+}
+
+template <typename T>
+const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::root() const
+{
+    return m_root;
 }
 
 template <typename T>
 bool BinarySearchTree<T>::contains(const T& item) const
 {
-    return contains(root, item);
+    return contains(m_root, item);
 }
 
 template <typename T>
-typename BinarySearchTree<T>::iterator BinarySearchTree<T>::find(const T& item) const
+const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::find(const T& item) const
 {
-    // TODO
+    return find(m_root, item);
 }
 
 template <typename T>
 void BinarySearchTree<T>::insert(const T& item)
 {
-    insert(root, item);
+    insert(m_root, item);
 }
 
 template <typename T>
 void BinarySearchTree<T>::insert(T&& item)
 {
-    insert(root, std::move(item));
+    insert(m_root, std::move(item));
 }
 
 template <typename T>
 void BinarySearchTree<T>::remove(const T& item)
 {
-    if (find(item))
-    {
-        // TODO
-    }
+    remove(m_root, item);
 }
 
 template <typename T>
-bool BinarySearchTree<T>::contains(const Node *node, const T& item)
+bool BinarySearchTree<T>::contains(const Node *node, const T& item) const
 {
-    // TODO find?
     if (node == nullptr)
     {
         return false;
     }
     else if (node->item > item)
     {
-        return contains(node->left);
+        return contains(node->left, item);
     }
     else if (node->item < item)
     {
-        return contains(node->right);
+        return contains(node->right, item);
     }
     else
     {
@@ -245,18 +453,18 @@ bool BinarySearchTree<T>::contains(const Node *node, const T& item)
     {
     while (node != nullptr)
     {
-        if (node->item > item)
-        {
-            node = node->left;
-        }
-        else if (node->item < item)
-        {
-            node = node->right;
-        }
-        else
-        {
-            return true;
-        }
+    if (node->item > item)
+    {
+    node = node->left;
+    }
+    else if (node->item < item)
+    {
+    node = node->right;
+    }
+    else
+    {
+    return true;
+    }
     }
 
     return false;
@@ -264,7 +472,7 @@ bool BinarySearchTree<T>::contains(const Node *node, const T& item)
 */
 
 template <typename T>
-void BinarySearchTree<T>::clear(Node *node)
+void BinarySearchTree<T>::clear(Node *&node)
 {
     if (node != nullptr)
     {
@@ -283,7 +491,29 @@ typename BinarySearchTree<T>::Node *BinarySearchTree<T>::clone(Node *node) const
 }
 
 template <typename T>
-const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::findMax(Node *node) const
+const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::find(const Node *node, const T& item) const
+{
+    while (node != nullptr)
+    {
+        if (node->item > item)
+        {
+            node = node->left;
+        }
+        else if (node->item < item)
+        {
+            node = node->right;
+        }
+        else
+        {
+            return node;
+        }
+    }
+
+    return nullptr;
+}
+
+template <typename T>
+const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::find_max(const Node *node) const
 {
     while (node != nullptr && node->right != nullptr)
     {
@@ -294,7 +524,7 @@ const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::findMax(Node *nod
 }
 
 template <typename T>
-const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::findMin(Node *node) const
+const typename BinarySearchTree<T>::Node *BinarySearchTree<T>::find_min(const Node *node) const
 {
     while (node != nullptr && node->left != nullptr)
     {
@@ -344,4 +574,40 @@ void BinarySearchTree<T>::insert(Node *&node, T&& item)
     {
         ; // Duplication
     }
+}
+
+template <typename T>
+void BinarySearchTree<T>::remove(Node *&node, const T& item)
+{
+    if (node == nullptr)
+    {
+        return;
+    }
+
+    if (item < node->item)
+    {
+        remove(node->left, item);
+    }
+    else if (item > node->item)
+    {
+        remove(node->right, item);
+    }
+
+    // When node has two children
+    else if (node->left != nullptr && node->right != nullptr)
+    {
+        node->item = find_min(node->right)->item;
+        remove(node->right, node->item);
+    }
+
+    // When node has only one child
+    else
+    {
+        Node *nodeFound = node;
+        node = (node->left != nullptr)
+               ? node->left
+               : node->right;
+        delete nodeFound;
+    }
+
 }

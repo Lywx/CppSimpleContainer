@@ -64,7 +64,7 @@ TEST_CASE("List Test", "")
         }
     }
 
-    SECTION("push_front")
+    SECTION("push_front, prefix and postfix increment")
     {
         auto list = List<int>();
         int  listExpected[] = { 1, 2, 3 };
@@ -72,8 +72,16 @@ TEST_CASE("List Test", "")
         list.push_front(2);
         list.push_front(1);
 
-        auto i = 0;
+        int i;
+        i = 0;
         for (auto iter = list.cbegin(); iter != list.cend(); ++iter)
+        {
+            REQUIRE(*iter == listExpected[i]);
+            ++i;
+        }
+
+        i = 0;
+        for (auto iter = list.cbegin(); iter != list.cend(); iter++)
         {
             REQUIRE(*iter == listExpected[i]);
             ++i;

@@ -54,7 +54,7 @@ typename List<T>::const_iterator& List<T>::const_iterator::operator++()
 }
 
 template <typename T>
-typename List<T>::const_iterator& List<T>::const_iterator::operator++(int)
+typename List<T>::const_iterator List<T>::const_iterator::operator++(int)
 {
     // Call copy constructor
     auto old = *this;
@@ -66,10 +66,11 @@ template <typename T>
 typename List<T>::const_iterator& List<T>::const_iterator::operator--()
 {
     m_current = m_current->prev;
+    return *this;
 }
 
 template <typename T>
-typename List<T>::const_iterator& List<T>::const_iterator::operator--(int)
+typename List<T>::const_iterator List<T>::const_iterator::operator--(int)
 {
     auto old = *this;
     --(*this);
@@ -120,7 +121,7 @@ typename List<T>::iterator& List<T>::iterator::operator++()
 }
 
 template <typename T>
-typename List<T>::iterator& List<T>::iterator::operator++(int)
+typename List<T>::iterator List<T>::iterator::operator++(int)
 {
     auto old = *this;
     ++(*this);
