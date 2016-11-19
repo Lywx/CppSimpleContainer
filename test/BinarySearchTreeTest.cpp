@@ -285,4 +285,30 @@ TEST_CASE("BinarySearchTree Test", "")
         bstPostorderExpected = { 8, 10, 9, 14, 13, 12 };
         ASSERT_POSTORDER_TRAVERSAL(bst, bstPostorderExpected);
     }
+
+    SECTION("copy constructor, clone")
+    {
+        auto bst = BinarySearchTree<int>();
+        bst.insert(11);
+        bst.insert(9);
+        bst.insert(13);
+        bst.insert(8);
+        bst.insert(10);
+        bst.insert(12);
+        bst.insert(14);
+        //     11
+        //   9    13
+        // 8  10 12 14
+        vector<int> bstPreorderExpected = { 11, 9, 8, 10, 13, 12, 14 };
+        ASSERT_PREORDER_TRAVERSAL(bst, bstPreorderExpected);
+        vector<int> bstInorderExpected  = { 8, 9, 10, 11, 12, 13, 14 };
+        ASSERT_INORDER_TRAVERSAL(bst, bstInorderExpected);
+        vector<int> bstPostorderExpected = { 8, 10, 9, 12, 14, 13, 11 };
+        ASSERT_POSTORDER_TRAVERSAL(bst, bstPostorderExpected);
+
+        auto bstClone = BinarySearchTree<int>(bst);
+        ASSERT_PREORDER_TRAVERSAL(bstClone, bstPreorderExpected);
+        ASSERT_INORDER_TRAVERSAL(bstClone, bstInorderExpected);
+        ASSERT_POSTORDER_TRAVERSAL(bstClone, bstPostorderExpected);
+    }
 }

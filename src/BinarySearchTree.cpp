@@ -495,7 +495,15 @@ void BinarySearchTree<T>::clear(Node *&node)
 template <typename T>
 typename BinarySearchTree<T>::Node *BinarySearchTree<T>::clone(Node *node) const
 {
-    // TODO
+    if (node == nullptr)
+    {
+        return nullptr;
+    }
+
+    auto *left = clone(node->left);
+    auto *right = clone(node->right);
+
+    return new Node(node->item, left, right);
 }
 
 template <typename T>
