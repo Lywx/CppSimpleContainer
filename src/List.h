@@ -24,10 +24,13 @@ public:
 
         const T& operator*() const;
 
+        // Prefix
         const_iterator& operator++();
-        const_iterator& operator++(int);
         const_iterator& operator--();
-        const_iterator& operator--(int);
+
+        // Postfix and notice that postfix return copy of iterator
+        const_iterator operator++(int);
+        const_iterator operator--(int);
 
         bool operator==(const_iterator& rhs) const;
         bool operator==(const_iterator&& rhs) const;
@@ -50,7 +53,7 @@ public:
 
         T& operator*() const;
         iterator& operator++();
-        iterator& operator++(int);
+        iterator operator++(int);
         iterator& operator--();
         iterator& operator--(int);
 

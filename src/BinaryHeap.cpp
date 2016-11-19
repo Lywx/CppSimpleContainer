@@ -156,4 +156,3 @@ void BinaryHeap<T>::percolate_down(int index)
         }
     }
 }
-
