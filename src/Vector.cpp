@@ -8,7 +8,7 @@ Vector<T>::Vector(int capacity) :
     m_capacity(capacity),
     m_size(0)
 {
-    m_items = new T[m_capacity] { 0 };
+    m_items = new T[m_capacity];
 }
 
 template <typename T>
@@ -184,7 +184,7 @@ void Vector<T>::reserve(int capacity)
 
     if (capacity > m_capacity)
     {
-        auto *itemsNew = new T[capacity] { 0 };
+        auto *itemsNew = new T[capacity];
         for (auto i = 0; i < size(); ++i)
         {
             itemsNew[i] = std::move(m_items[i]);

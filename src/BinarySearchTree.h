@@ -3,16 +3,16 @@
 #include <stack>
 
 // Reference: Weiss M.A. Data Structures and Algorithm Analysis in C++, 4th, 2014
-// Implementation: TODO.
+// Implementation: Finished.
 template <typename T>
 class BinarySearchTree
 {
     /************************************************************************/
     /* Inner Class Declaration                                              */
     /************************************************************************/
-private:
-    struct Node;
 public:
+    struct Node;
+
     class const_iterator
     {
     protected:
@@ -21,7 +21,7 @@ public:
         // Allow implicit conversion from Node*
         const_iterator(Node *current);
     public:
-        ~const_iterator();
+        virtual ~const_iterator();
 
         const T& operator*() const;
 
@@ -47,8 +47,8 @@ public:
         const_preorder_iterator(Node *current);
 
     public:
-        virtual const_preorder_iterator& operator++();
-        virtual const_preorder_iterator operator++(int);
+        const_preorder_iterator& operator++();
+        const_preorder_iterator operator++(int);
 
     protected:
         friend class BinarySearchTree;
@@ -61,8 +61,8 @@ public:
         const_inorder_iterator(Node *current);
 
     public:
-        virtual const_inorder_iterator& operator++();
-        virtual const_inorder_iterator operator++(int);
+        const_inorder_iterator& operator++();
+        const_inorder_iterator operator++(int);
 
     protected:
         friend class BinarySearchTree;
@@ -75,8 +75,8 @@ public:
         const_postorder_iterator(Node *current);
 
     public:
-        virtual const_postorder_iterator& operator++();
-        virtual const_postorder_iterator operator++(int);
+        const_postorder_iterator& operator++();
+        const_postorder_iterator operator++(int);
 
     protected:
         friend class BinarySearchTree;
@@ -90,13 +90,16 @@ public:
 
         Node(const T& item, Node *left, Node *right);
         Node(T&& item, Node *left, Node *right);
+
+        // Make this class a "polymorphic" type
+        virtual ~Node();
     };
 
     /************************************************************************/
     /* Class Declaration                                                    */
     /************************************************************************/
     BinarySearchTree();
-    ~BinarySearchTree();
+    virtual ~BinarySearchTree();
 
     // Copy Semantics
     BinarySearchTree(const BinarySearchTree& rhs);
@@ -122,13 +125,14 @@ public:
     const Node *find_min() const;
     const Node *root() const;
 
-    void        insert(const T& item);
-    void        insert(T&& item);
-    void        remove(const T& item);
+    virtual void insert(const T& item);
+    virtual void insert(T&& item);
+    virtual void remove(const T& item);
 
     const T&    max() const;
     const T&    min() const;
-private:
+
+protected:
     bool        contains(const Node *node, const T& item) const;
     void        clear(Node *&node);
     Node       *clone(Node *node) const;
@@ -137,9 +141,9 @@ private:
     const Node *find_max(const Node *node) const;
     const Node *find_min(const Node *node) const;
 
-    void        insert(Node *&node, const T& item);
-    void        insert(Node *&node, T&& item);
-    void        remove(Node *&node, const T& item);
+    virtual void insert(Node *&node, const T& item);
+    virtual void insert(Node *&node, T&& item);
+    virtual void remove(Node *&node, const T& item);
 
     Node *m_root;
 };

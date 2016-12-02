@@ -266,6 +266,11 @@ BinarySearchTree<T>::Node::Node(T&& item, Node *left, Node *right) :
 {
 }
 
+template <typename T>
+BinarySearchTree<T>::Node::~Node()
+{
+}
+
 /************************************************************************/
 /* Class Implementation                                                 */
 /************************************************************************/
